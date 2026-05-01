@@ -93,3 +93,24 @@ cmake --build build/Debug   # compile
 # Flash with STM32CubeProgrammer or openocd
 Debug serial output
 Connect a serial terminal (e.g. PuTTY, CoolTerm) to the Nucleo's virtual COM port at 115200 baud, 8N1. The firmware prints sensor readings, velocity deltas, calibration limits, and Bluetooth receive events on every loop iteration.
+
+Companion Mobile Application
+A companion Android application is provided, built using MIT App Inventor. The app connects to the device over Bluetooth LE and provides real-time monitoring and control from a smartphone.
+The App Inventor source file (companion_app.aia) is included in the root of this repository. It can be opened and edited at ai2.appinventor.mit.edu and deployed to an Android device via the MIT AI2 Companion app or by exporting a standalone APK.
+Features
+
+BLE device discovery — on launch, the app begins scanning automatically. A picker lists all nearby devices by name and address; selecting one establishes a connection.
+Live angle display — the current joint angle is shown as a numeric label, updated on every incoming data packet (~50 ms).
+Overextension counter — a running total of overextension events is displayed and updated in real time.
+Live chart — joint angle is plotted against elapsed session time (seconds), giving a visual record of movement during the session.
+Calibrate — sends the C command to the device, setting the current joint position as the safe-range limit.
+Pause / Resume — sends P or R to temporarily suspend or re-enable haptic feedback without disconnecting.
+Reset — sends X to zero the overextension counter and clears the chart and session timer.
+
+BLE configuration
+The app communicates over the following GATT characteristic, which matches the firmware configuration:
+ParameterValueService UUID0000ffe0-0000-1000-8000-00805f9b34fbCharacteristic UUID0000ffe1-0000-1000-8000-00805f9b34fbData format (RX)UTF-8 string, angle,overextensionCount\nData format (TX)Single unsigned byte (67=C, 80=P, 82=R, 88=X)
+Requirements
+
+Android device with Bluetooth LE support (Android 5.0+)
+MIT AI2 Companion (for testing) or a compiled APK (for standalone use)
